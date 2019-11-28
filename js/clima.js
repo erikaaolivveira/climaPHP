@@ -1,52 +1,57 @@
-function getClima(){
+function getClima() {
     $.ajax({
-        method: 'get', crossDomain: true, url: 'https://api.openweathermap.org/data/2.5/weather?id=3468879&appid=5a9a1b306ac7e38c785f3018082af4ca',
-        dataType: 'json', success: function(data){
-            
-            descricao = traduzirDescricao(data.weather[0].description);
-            $('#situacao').html(descricao);
-            
+        method: 'get',
+        crossDomain: true,
+        url: 'https://api.openweathermap.org/data/2.5/weather?id=3468879&appid=3d74c0cc7d26fe20f2699fb0f5261488',
+        dataType: 'json',
+        success: function (data) {
+           
             temperatura = data.main.temp - 273;
-            var tempFormatada = temperatura.toFixed(0).split('.');
-            $('#temperatura').html(tempFormatada + "°C");
-            
+            var tempFormatada = temperatura.toFixed(2).split('.');
+            $('#temperatura').html(tempFormatada+"º");
+           
+            temperaturaMax = data.main.temp_max - 273;
+            var tempFormatadaMax = temperaturaMax.toFixed(2).split('.');
+            $('#temperaturaMax').html(tempFormatadaMax+"º");
+           
+            temperaturaMin = data.main.temp_min - 273;
+            var tempFormatadaMin = temperaturaMin.toFixed(2).split('.');
+            $('#temperaturaMin').html(tempFormatadaMin+"º");
+           
             umidade = data.main.humidity;
             $('#umidade').html(umidade + "%");
+           
+           
+            pressao = data.main.pressure;
+            $('#pressao').html(pressao + "Hg");
             
-            velocidadeVento = data.wind.speed;
-            $('#velocidadeVento').html(velocidadeVento + "");
+           
+           
+            vento = data.wind.speed;
+            $('#vento').html(vento + "Km");
             
-            tempMin = data.main.temp_min - 273;
-            var temp2Formatada = temperatura.toFixed(0).split('.');
-            $('#tempMin').html(temp2Formatada + "°C");
             
-            tempMax = data.main.temp_max - 273;
-            var temp3Formatada = temperatura.toFixed(0).split('.');
-            $('#tempMax').html(temp3Formatada + "°c");
-            
-            pressaoVento = data.wind.deg;
-            $('#pressaoVento').html(pressaoVento);
-            
-            velocidadeVento = data.wind.deg;
-            $('#velocidadeVento').html(velocidadeVento);
             
             var dataAmanhecer = new Date(data.sys.sunrise*1000);
-            var descDataAmanhecer = 
+            var descDataAmanhecer =
             dataAmanhecer.getHours()+':'+dataAmanhecer.getMinutes();
             $('#amanhecer').html(descDataAmanhecer);
             
-            var dataPorDoSol = new Date(data.sys.sunset*1000);
-            var descPorDoSol = 
-            dataPordoSol.getHours()+':'+dataPorDoSol.getMinutes();
-            $('#pordosol').html(descPorDoSol);
             
-            var icone = data.weather[0].icon;
-            var caminhoIcone = 'img/icones/'+icone+'.png';
-            $('#icone').attr('src', caminhoIcone);
-            
-            
-            
-        }, 
+             var dataPorDoSol = new Date(data.sys.sunset*1000);
+            var descDataPorDoSol =
+            dataPorDoSol.getHours()+':'+dataPorDoSol.getMinutes();
+            $('#anoitecer').html(descDataPorDoSol);
+    
+           
+           
+            descricao = traduzirDescricao(data.weather[0].description);
+            $('#situacao').html(descricao);
+           
+           
+           
+        },
+       
         error: function (argument) {
             alert('Falha ao obter dados!');
         }
@@ -54,30 +59,40 @@ function getClima(){
 }
 
 function traduzirDescricao(descricao){
+   
     descricaoTraduzida = "";
-    if(descricao == "clear sky"){
-        descricaoTraduzida = "Céu Limpo";
-    }else if(descricao == "few clouds"){
+   
+    if (descricao == "clear sky"){  
+        descricaoTraduzida ="Céu Limpo";
+       
+    } else if (descricao == "few clouds"){
         descricaoTraduzida = "Poucas Nuvens";
-    }else if(descricao == "scattered clouds"){
-        descricaoTraduzida = "Nuvens Dispersas";
-    }else if(descricao == "broken clouds"){
-        descricaoTraduzida = "Nuvens Quebradas";
-    }else if(descricao == "shower rain"){
-        descricaoTraduzida = "Pouca Chuva";
-    }else if(descricao == "rain"){
+       
+    }else if (descricao == "scattered clouds"){
+        descricaoTraduzida = "Nuvens dispersas";
+       
+    }else if (descricao == "broken clouds"){
+        descricaoTraduzida = "Parcialmente Nublado";
+       
+    }else if (descricao == "shower rain"){
+        descricaoTraduzida = "Chuva Leve";
+       
+    }else if (descricao == "rain"){
         descricaoTraduzida = "Chuva";
-    }else if(descricao == "thunderstorm"){
+       
+    }else if (descricao == "thunderstorm"){
         descricaoTraduzida = "Trovoada";
-    }else if(descricao == "snow"){
+       
+    }else if (descricao == "snow"){
         descricaoTraduzida = "Neve";
-    }else if(descricao == "mist"){
+       
+    }else if (descricao == "mist"){
         descricaoTraduzida = "Névoa";
     }
     return descricaoTraduzida;
 }
 
-window.onload = function(){
+
+window.onload = function () {
     getClima();
 };
-
